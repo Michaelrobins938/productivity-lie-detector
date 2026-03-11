@@ -2,633 +2,553 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Productivity Lie Detector 🔍</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Productivity Lie Detector OS</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a0f">
+    
+    <!-- Embedded PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlByb2R1Y3Rpdml0eSBMaWUgRGV0ZWN0b3IiLAogICJzaG9ydF9uYW1lIjogIkxpZSBTY2FubmVyIiwKICAiZGVzY3JpcHRpb24iOiAiRXhwb3NlIHRveGljIGh1c3RsZSBjdWx0dXJlIG15dGhzLiIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGEwYTBmIiwKICAidGhlbWVfY29sb3IiOiAiI2ZkNzlhOCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F4TURBZ01UUHdJajQ4Y21WamRDQjNhV1IwYUQwaU1UQXdJaUJvWldsbmFIUTlJakV3TUNJZ1ptbHNiRDBpSXpBd01EQXdPQ0l2UGp4MFpYaDBJSGs5SWpVd0lpQjRQU0kxTUNJZ1ptOXVkQzF6YVhwbFBTSTFNQ0lnZEdWOGRDMWhibU5vYjNJOUltMXBaR1JzWlNJZ1poazlJaTR6Wm0waVBqY3ZjM1puUGp4OGMzWm5QZz09IiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700;900&family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&family=Inter:wght@300;400;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #1a1a2e;
-            --bg-card: #16213e;
-            --accent-purple: #6c5ce7;
+            --bg-void: #050508;
+            --bg-panel: rgba(20, 20, 30, 0.85);
+            
+            --accent-purple: #8a2be2;
             --accent-pink: #fd79a8;
             --accent-cyan: #00cec9;
-            --text-primary: #ddd6fe;
-            --text-secondary: #a5b3cf;
+            --danger: #ff1744;
+            --success: #00e676;
+            
+            --text-main: #f8f9fa;
             --text-muted: #6b7280;
-            --border-glow: #2d3748;
-            --danger: #ff6b6b;
-            --success: #51cf66;
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            line-height: 1.6;
+            background: var(--bg-void);
+            color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-        
-        .title {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink), var(--accent-cyan));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
-            margin-bottom: 1rem;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-        
-        .energy-meter {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(108, 92, 231, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid var(--accent-purple);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-        }
-        
-        .myth-container {
-            display: grid;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .myth-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(22, 33, 62, 0.8) 100%);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid var(--border-glow);
-            transition: all 0.3s ease;
-            position: relative;
             overflow: hidden;
+            overscroll-behavior-y: none;
         }
+
+        /* --- Hardware Engine (Backgrounds) --- */
+        #polygraph-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.6; }
         
-        .myth-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.1), transparent);
-            transition: left 0.5s ease;
+        .scanline-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 100;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%; opacity: 0.4;
         }
-        
-        .myth-card:hover::before {
-            left: 100%;
+
+        .vignette {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 90;
+            box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
         }
+
+        /* --- Juice & Animations --- */
+        .shake-light { animation: shakeLight 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+        .shake-heavy { animation: shakeHeavy 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+
+        @keyframes shakeLight { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        @keyframes shakeHeavy { 0%, 100% { transform: translate(0, 0) rotate(0); } 10%, 30%, 50%, 70%, 90% { transform: translate(-10px, 10px) rotate(-2deg); filter: hue-rotate(90deg); } 20%, 40%, 60%, 80% { transform: translate(10px, -10px) rotate(2deg); filter: hue-rotate(-90deg); } }
+
+        .spark { position: fixed; pointer-events: none; border-radius: 50%; z-index: 9999; animation: sparkFly 0.6s cubic-bezier(0, .9, .57, 1) forwards; }
+        @keyframes sparkFly { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
+
+        .glitch-active { position: relative; animation: glitchText 0.3s infinite; color: var(--danger); text-shadow: 2px 0 var(--accent-cyan), -2px 0 var(--accent-pink); }
+        @keyframes glitchText { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+
+        /* --- App Layout --- */
+        #app-wrapper { position: relative; z-index: 10; max-width: 800px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; }
         
-        .myth-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-purple);
-            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.2);
-        }
+        .screen { display: none; opacity: 0; transition: opacity 0.5s ease; flex-direction: column; width: 100%; height: 100%; padding: 20px; }
+        .screen.visible { display: flex; opacity: 1; }
+
+        /* --- Header & Top Bar --- */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; }
+        .logo { font-family: 'Fira Code', monospace; font-size: 1.2rem; font-weight: 900; color: var(--accent-pink); text-transform: uppercase; letter-spacing: -1px; text-shadow: 0 0 10px rgba(253, 121, 168, 0.5); }
         
-        .myth-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
+        .status-monitor { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); animation: pulseDot 2s infinite; }
+        @keyframes pulseDot { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        /* --- Intro Screen --- */
+        #intro-screen { justify-content: center; align-items: center; text-align: center; }
+        .intro-title { font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 900; margin-bottom: 20px; line-height: 1.1; background: linear-gradient(135deg, var(--text-main), var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .intro-desc { font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin-bottom: 40px; line-height: 1.6; }
+
+        .btn-primary { background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink)); color: white; border: none; padding: 18px 40px; border-radius: 30px; font-family: 'Fira Code', monospace; font-weight: 800; font-size: 1.1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 10px 30px rgba(253, 121, 168, 0.3); transition: all 0.2s; }
+        .btn-primary:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(253, 121, 168, 0.5); }
+        .btn-primary:active { transform: scale(0.95); }
+
+        /* --- Main Scanner Screen --- */
+        #scanner-screen { justify-content: center; align-items: center; flex: 1; gap: 30px; }
         
-        .myth-icon {
-            font-size: 2rem;
-            animation: bounce 2s infinite;
-        }
+        .monitor-card { width: 100%; background: var(--bg-panel); border: 2px solid var(--border-color, var(--glass-border)); border-radius: 20px; padding: 40px 30px; position: relative; overflow: hidden; backdrop-filter: blur(10px); transition: border-color 0.3s, box-shadow 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; min-height: 350px; justify-content: center; }
         
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
+        .monitor-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--border-color, var(--accent-cyan)); transition: background 0.3s; }
         
-        .myth-text {
-            background: rgba(255, 107, 107, 0.1);
-            padding: 1rem;
-            border-left: 4px solid var(--danger);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-style: italic;
-            position: relative;
-        }
+        .tag-label { position: absolute; top: 15px; left: 20px; font-family: 'Fira Code', monospace; font-size: 0.8rem; font-weight: 700; color: var(--border-color, var(--accent-cyan)); text-transform: uppercase; transition: color 0.3s; }
         
-        .myth-text::before {
-            content: '"';
-            font-size: 3rem;
-            color: var(--danger);
-            position: absolute;
-            top: -10px;
-            left: 10px;
-            font-family: serif;
-        }
+        .display-text { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; line-height: 1.4; text-align: center; color: var(--text-main); position: relative; z-index: 2; }
         
-        .response-text {
-            background: rgba(81, 207, 102, 0.1);
-            padding: 1rem;
-            border-left: 4px solid var(--success);
-            border-radius: 8px;
-            font-weight: 500;
-            position: relative;
-        }
+        /* Typography states */
+        .state-myth .display-text { font-style: italic; opacity: 0.9; }
+        .state-myth .display-text::before { content: '"'; color: var(--text-muted); }
+        .state-myth .display-text::after { content: '"'; color: var(--text-muted); }
         
-        .response-text::before {
-            content: '🎯';
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.2rem;
-        }
+        .state-truth .display-text { font-family: 'Fira Code', monospace; color: var(--success); text-shadow: 0 0 15px rgba(0, 230, 118, 0.4); font-size: clamp(1.2rem, 3.5vw, 1.6rem); }
         
-        .interactive-section {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid var(--border-glow);
-            margin-bottom: 3rem;
-        }
+        .btn-massive { width: 100%; max-width: 400px; height: 80px; background: var(--danger); border: 4px solid #b71c1c; border-radius: 16px; color: white; font-family: 'Fira Code', monospace; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 0 #b71c1c, 0 15px 30px rgba(255, 23, 68, 0.4); transition: all 0.1s; display: flex; justify-content: center; align-items: center; letter-spacing: 2px; }
+        .btn-massive:hover { transform: translateY(2px); box-shadow: 0 8px 0 #b71c1c, 0 10px 20px rgba(255, 23, 68, 0.4); filter: brightness(1.1); }
+        .btn-massive:active { transform: translateY(10px); box-shadow: 0 0 0 #b71c1c, 0 0 10px rgba(255, 23, 68, 0.4); background: #d50000; }
         
-        .section-title {
-            font-size: 1.8rem;
-            color: var(--accent-cyan);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .btn-next { background: transparent; border: 2px solid var(--success); color: var(--success); padding: 15px 40px; border-radius: 30px; font-family: 'Fira Code', monospace; font-weight: 800; font-size: 1.2rem; cursor: pointer; display: none; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 230, 118, 0.2); transition: all 0.2s; }
+        .btn-next:hover { background: rgba(0, 230, 118, 0.1); transform: scale(1.05); }
+        .btn-next.visible { display: block; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* --- Footer & Add Custom --- */
+        footer { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-top: 1px solid var(--glass-border); flex-shrink: 0; margin-top: auto; }
+        .score-display { font-family: 'Fira Code', monospace; font-weight: 700; color: var(--accent-cyan); font-size: 1.1rem; }
+        .btn-icon { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; }
+        .btn-icon:hover { background: rgba(255,255,255,0.1); transform: rotate(15deg); }
+
+        /* --- Modal for Adding Myths --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 8000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
         
-        .custom-input {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
+        .modal { background: var(--bg-panel); border: 1px solid var(--accent-pink); border-radius: 20px; width: 90%; max-width: 500px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(253, 121, 168, 0.1); transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .modal { transform: translateY(0); }
         
-        .input-field {
-            flex: 1;
-            min-width: 200px;
-            padding: 0.8rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-family: 'Fira Code', monospace; font-size: 1.2rem; font-weight: 800; color: var(--accent-pink); }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
         
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent-purple);
-            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
-        }
+        .input-group { margin-bottom: 20px; }
+        .input-label { display: block; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+        .modal-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: var(--text-main); padding: 15px; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s; resize: vertical; min-height: 60px; }
+        .modal-input:focus { border-color: var(--accent-cyan); }
         
-        .add-btn {
-            background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink));
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-        
-        .add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
-        }
-        
-        .custom-myths {
-            margin-top: 2rem;
-        }
-        
-        .custom-myth {
-            background: rgba(108, 92, 231, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(108, 92, 231, 0.2);
-            animation: slideIn 0.5s ease;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .delete-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-left: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .delete-btn:hover {
-            background: #ff5252;
-        }
-        
-        .energy-boost {
-            text-align: center;
-            margin: 3rem 0;
-        }
-        
-        .boost-btn {
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .boost-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            transform: translate(-50%, -50%);
-        }
-        
-        .boost-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-        
-        .boost-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .footer {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-family: 'Fira Code', monospace;
-            margin-top: 3rem;
-        }
-        
-        .adhd-tips {
-            background: linear-gradient(135deg, rgba(253, 121, 168, 0.1), rgba(108, 92, 231, 0.1));
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-            border: 1px solid var(--accent-pink);
-        }
-        
-        .tip-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .tip-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .tip-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-cyan);
-        }
-        
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            .myth-card { padding: 1.5rem; }
-            .custom-input { flex-direction: column; }
-            .input-field { min-width: unset; }
-        }
-        
-        .glitch {
-            animation: glitch 0.3s ease-in-out;
-        }
-        
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
+        .btn-submit { width: 100%; background: var(--accent-cyan); color: #000; border: none; padding: 15px; border-radius: 12px; font-family: 'Fira Code', monospace; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+        .btn-submit:active { transform: scale(0.98); }
+
+        /* Install Banner */
+        #install-banner { position: fixed; top: 0; left: 0; width: 100%; background: var(--accent-purple); color: white; text-align: center; padding: 10px; font-family: 'Fira Code', monospace; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: none; z-index: 9999; }
+
+        @media (max-width: 600px) {
+            .monitor-card { padding: 30px 20px; min-height: 300px; }
+            .btn-massive { font-size: 1.2rem; height: 70px; }
+            .intro-title { font-size: 2.8rem; }
+            #app-wrapper { padding: 10px; }
+            header { padding: 10px 10px; }
+            footer { padding: 10px 10px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1 class="title">The Productivity Lie Detector</h1>
-            <p class="subtitle">*Slurring slightly* "Okay, okay, hear me out... what if productivity culture is just capitalism with anxiety?"</p>
-            <div class="energy-meter">
-                <span>🧠 ADHD Brain Status:</span>
-                <span id="brainStatus">Caffeinated Chaos Mode</span>
+    <canvas id="polygraph-canvas"></canvas>
+    <div class="scanline-overlay"></div>
+    <div class="vignette"></div>
+
+    <div id="install-banner" onclick="installPWA()">📥 Install Lie Detector OS to Home Screen</div>
+
+    <div id="app-wrapper">
+        <header>
+            <div class="logo">Sys//Lie_Detector</div>
+            <div class="status-monitor">
+                <div class="status-dot"></div>
+                <span id="brain-status">IDLE</span>
             </div>
         </header>
 
-        <div class="myth-container">
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">🤡</span>
-                    <h3>The "Discipline" Delusion</h3>
-                </div>
-                <div class="myth-text">
-                    "You just need more discipline!"
-                </div>
-                <div class="response-text">
-                    "I need dopamine, Brenda, not a lecture on moral character. Also, discipline is a skill, not a personality trait, and some of us are playing executive function on hard mode."
-                </div>
-            </div>
-
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">🌅</span>
-                    <h3>The 5 AM Myth</h3>
-                </div>
-                <div class="myth-text">
-                    "Successful people wake up at 5 AM!"
-                </div>
-                <div class="response-text">
-                    "Successful people work WITH their circadian rhythms, not against them. Also, my brain doesn't boot up until noon, and that's not a moral failing - it's neurobiology, Karen."
-                </div>
-            </div>
-
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">⏰</span>
-                    <h3>The Time Blindness Gaslighting</h3>
-                </div>
-                <div class="myth-text">
-                    "If you really wanted it, you'd find the time!"
-                </div>
-                <div class="response-text">
-                    "Time blindness is a neurological reality, not a motivational failure. I can't 'find' time like it's hiding under my couch cushions next to my executive function."
-                </div>
-            </div>
-
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">🎭</span>
-                    <h3>The Excuse Accusation</h3>
-                </div>
-                <div class="myth-text">
-                    "You're just making excuses!"
-                </div>
-                <div class="response-text">
-                    "I'm making accommodations for my brain's actual needs. There's a difference between excuses and explanations, and I refuse to gaslight myself anymore."
-                </div>
-            </div>
-
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">⏱️</span>
-                    <h3>The 24-Hour Fallacy</h3>
-                </div>
-                <div class="myth-text">
-                    "Everyone has the same 24 hours!"
-                </div>
-                <div class="response-text">
-                    "Not everyone has the same executive function capacity in those 24 hours. That's like saying everyone has the same marathon because we all have legs."
-                </div>
-            </div>
-
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">💪</span>
-                    <h3>The "Try Harder" Trap</h3>
-                </div>
-                <div class="myth-text">
-                    "You need to try harder!"
-                </div>
-                <div class="response-text">
-                    "I need systems that work with my brain, not against it. 'Trying harder' with a broken system just burns out the engine faster."
-                </div>
-            </div>
-
-            <div class="myth-card">
-                <div class="myth-header">
-                    <span class="myth-icon">🔄</span>
-                    <h3>The Consistency Cult</h3>
-                </div>
-                <div class="myth-text">
-                    "Consistency is key!"
-                </div>
-                <div class="response-text">
-                    "Flexibility is survival for neurodivergent brains. My consistency looks like adaptability, not rigid repetition."
-                </div>
-            </div>
+        <!-- Intro Screen -->
+        <div id="intro-screen" class="screen visible">
+            <h1 class="intro-title">THE<br>PRODUCTIVITY<br>LIE DETECTOR</h1>
+            <p class="intro-desc">A neurodivergent hardware diagnostic tool designed to forcibly extract the truth behind toxic hustle culture and capitalist gaslighting.</p>
+            <button class="btn-primary" id="btn-start">CALIBRATE POLYGRAPH</button>
         </div>
 
-        <div class="adhd-tips">
-            <h2 class="section-title">🧠 ADHD-Friendly Reality Checks</h2>
-            <div class="tip-grid">
-                <div class="tip-card">
-                    <strong>🎯 Hyperfocus ≠ Productivity</strong><br>
-                    Sometimes the most productive thing is stepping away from the hyperfocus vortex.
-                </div>
-                <div class="tip-card">
-                    <strong>⚡ Energy Management > Time Management</strong><br>
-                    Work with your natural rhythms, not against your chronotype.
-                </div>
-                <div class="tip-card">
-                    <strong>🔄 Task Switching is Valid</strong><br>
-                    Your brain craves novelty. Embrace the productive procrastination.
-                </div>
-                <div class="tip-card">
-                    <strong>🎵 Sensory Needs Matter</strong><br>
-                    Background noise, fidget toys, movement - these aren't distractions, they're tools.
-                </div>
+        <!-- Scanner Screen -->
+        <div id="scanner-screen" class="screen">
+            <div class="monitor-card state-myth" id="monitor">
+                <div class="tag-label" id="tag-label">INCOMING SIGNAL</div>
+                <div class="display-text" id="display-text">Loading temporal data...</div>
             </div>
+
+            <button class="btn-massive" id="btn-detect">DETECT BULLSHIT</button>
+            <button class="btn-next" id="btn-next">SCAN NEXT</button>
         </div>
 
-        <div class="interactive-section">
-            <h2 class="section-title">🎪 Add Your Own Productivity Lies</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
-                *Gestures wildly with drink* "What other bullshit have people told you about productivity? Let's roast it together!"
-            </p>
-            <div class="custom-input">
-                <input type="text" class="input-field" id="mythInput" placeholder="Enter the toxic productivity myth...">
-                <input type="text" class="input-field" id="responseInput" placeholder="Your savage but loving response...">
-                <button class="add-btn" onclick="addCustomMyth()">Add to Collection</button>
-            </div>
-            <div class="custom-myths" id="customMyths"></div>
-        </div>
-
-        <div class="energy-boost">
-            <button class="boost-btn" onclick="generateRandomResponse()">
-                🎲 Generate Random Validation
-            </button>
-            <div id="randomValidation" style="margin-top: 1rem; font-style: italic; color: var(--accent-cyan);"></div>
-        </div>
-
-        <footer class="footer">
-            <p>
-                Made with ✨ ADHD chaos energy ✨<br>
-                "Remember: Your brain isn't broken, society's expectations are."<br>
-                <em>*Mic drop* *Immediately picks mic back up because sensory needs*</em>
-            </p>
+        <footer>
+            <div class="score-display">LIES BUSTED: <span id="score-counter" style="color: var(--text-main)">0</span></div>
+            <button class="btn-icon" onclick="openAddModal()" title="Add Custom Data">+</button>
         </footer>
     </div>
 
+    <!-- Add Custom Modal -->
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">INJECT CUSTOM DATA</div>
+                <button class="modal-close" onclick="closeAddModal()">×</button>
+            </div>
+            <div class="input-group">
+                <label class="input-label">The Toxic Myth</label>
+                <textarea class="modal-input" id="input-myth" placeholder='e.g., "Just try harder!"'></textarea>
+            </div>
+            <div class="input-group">
+                <label class="input-label">The Neurodivergent Truth</label>
+                <textarea class="modal-input" id="input-truth" placeholder='e.g., "I am idling at 9,000 RPM while parked. Any harder and the engine melts."'></textarea>
+            </div>
+            <button class="btn-submit" onclick="saveCustomData()">UPLOAD TO MAINFRAME</button>
+        </div>
+    </div>
+
     <script>
-        let customMyths = [];
-        let brainStatuses = [
-            "Caffeinated Chaos Mode",
-            "Hyperfocus Engaged",
-            "Executive Function Loading...",
-            "Dopamine Seeking",
-            "Task Switching Champion",
-            "Procrastination Master",
-            "Rejection Sensitivity Active",
-            "Time Blindness Enabled",
-            "Sensory Overload Detected",
-            "Creative Genius Mode"
+        // --- Database ---
+        const defaultData = [
+            { myth: "You have the same 24 hours as Beyoncé.", truth: "Beyoncé has a staff of 40 and doesn't have to manually regulate her dopamine just to fold laundry." },
+            { myth: "Just break it down into smaller steps!", truth: "Great, now instead of one impossible task, I have 47 tiny impossible tasks and severe decision paralysis." },
+            { myth: "If it takes less than 5 minutes, do it right away.", truth: "Time blindness means everything takes either 30 seconds or 4 hours. There is no in-between." },
+            { myth: "You just need more discipline.", truth: "I need dopamine, Brenda, not a lecture on moral character. Discipline is a skill, I am playing on hard mode." },
+            { myth: "Consistency is the key to success.", truth: "Consistency is a neurotypical construct. We run on the ancient power of chaotic bursts and 3 AM inspiration." },
+            { myth: "Successful people wake up at 5 AM.", truth: "Successful people work WITH their circadian rhythms. My brain doesn't boot up until noon; that's neurobiology, not a moral failing." },
+            { myth: "You're just making excuses.", truth: "I'm making accommodations for my brain's actual needs. There's a difference between excuses and explanations." },
+            { myth: "Just use a planner!", truth: "A planner is just a beautiful, expensive graveyard of my good intentions." }
         ];
 
-        let validations = [
-            "Your worth isn't measured by your productivity, bestie 💜",
-            "That executive dysfunction hit different today, and that's okay ✨",
-            "You're not lazy, you're just running different software 🧠",
-            "Neurotypical advice doesn't work for neurodivergent brains, period 🎯",
-            "Your hyperfocus sessions count as productivity too 🔥",
-            "Rest is productive. Self-care is productive. Existing is productive 🌟",
-            "Your brain needs what it needs, and that's not negotiable 💪",
-            "Masking all day is exhausting - you deserve to unmask 🎭",
-            "Your stimming is valid, your needs are valid, YOU are valid 💖",
-            "Different doesn't mean deficient, it means diverse 🌈"
-        ];
+        let database = [];
+        let currentIndex = -1;
+        let score = 0;
+        let isScanned = false;
 
-        function updateBrainStatus() {
-            const statusElement = document.getElementById('brainStatus');
-            const randomStatus = brainStatuses[Math.floor(Math.random() * brainStatuses.length)];
-            statusElement.textContent = randomStatus;
-            statusElement.parentElement.classList.add('glitch');
-            setTimeout(() => {
-                statusElement.parentElement.classList.remove('glitch');
-            }, 300);
+        // --- Audio Engine ---
+        let audioCtx;
+        function getAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
         }
 
-        function addCustomMyth() {
-            const mythInput = document.getElementById('mythInput');
-            const responseInput = document.getElementById('responseInput');
-            const myth = mythInput.value.trim();
-            const response = responseInput.value.trim();
+        function playSound(type) {
+            const ctx = getAudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
 
-            if (!myth || !response) {
-                alert('Come on, give me something to work with here! Fill in both fields.');
+            if (type === 'start') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.3);
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.1, now + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } else if (type === 'buzzer') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.5);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now); osc.stop(now + 0.5);
+                
+                // Add a dissonance layer
+                const osc2 = ctx.createOscillator();
+                osc2.type = 'square';
+                osc2.frequency.setValueAtTime(105, now);
+                osc2.connect(gain);
+                osc2.start(now); osc2.stop(now + 0.5);
+            } else if (type === 'scan') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.linearRampToValueAtTime(400, now + 0.2);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
+            }
+        }
+
+        // --- Polygraph Canvas Engine ---
+        const canvas = document.getElementById('polygraph-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let points = [];
+        let phase = 0;
+        let volatility = 0.1; // 0.1 = calm, 1.0 = chaotic
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initPoints();
+        }
+
+        function initPoints() {
+            points = [];
+            const numPoints = Math.floor(width / 10);
+            for(let i = 0; i <= numPoints; i++) {
+                points.push({ x: (i / numPoints) * width, y: height / 2 });
+            }
+        }
+
+        function drawPolygraph() {
+            ctx.fillStyle = 'rgba(5, 5, 8, 0.2)'; // Trailing effect
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            
+            phase += 0.05;
+            
+            for(let i = 1; i < points.length; i++) {
+                // Base sine wave
+                let targetY = (height / 2) + Math.sin(phase + i * 0.1) * 20;
+                
+                // Add volatility (chaos)
+                if (volatility > 0.2) {
+                    targetY += (Math.random() - 0.5) * 200 * volatility;
+                }
+                
+                // Smooth interpolation
+                points[i].y += (targetY - points[i].y) * 0.2;
+                
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            
+            // Color based on volatility
+            if (volatility > 0.5) {
+                ctx.strokeStyle = '#ff1744';
+                ctx.lineWidth = 4;
+            } else {
+                ctx.strokeStyle = '#00cec9';
+                ctx.lineWidth = 2;
+            }
+            
+            ctx.stroke();
+            
+            // Draw scanning playhead
+            const playheadX = (phase * 50) % width;
+            ctx.beginPath();
+            ctx.moveTo(playheadX, 0);
+            ctx.lineTo(playheadX, height);
+            ctx.strokeStyle = volatility > 0.5 ? 'rgba(255, 23, 68, 0.5)' : 'rgba(0, 206, 201, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            requestAnimationFrame(drawPolygraph);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        drawPolygraph();
+
+        // --- Visual Juice ---
+        function createSparks(x, y, color) {
+            for(let i=0; i<25; i++) {
+                let spark = document.createElement('div'); spark.className = 'spark';
+                let ang = Math.random() * Math.PI * 2, dist = Math.random() * 200 + 50;
+                spark.style.left = `${x}px`; spark.style.top = `${y}px`;
+                spark.style.width = `${Math.random() * 6 + 2}px`; spark.style.height = spark.style.width;
+                spark.style.backgroundColor = color; spark.style.boxShadow = `0 0 15px ${color}`;
+                spark.style.setProperty('--tx', `${Math.cos(ang) * dist}px`); spark.style.setProperty('--ty', `${Math.sin(ang) * dist}px`);
+                document.body.appendChild(spark); setTimeout(() => spark.remove(), 600);
+            }
+        }
+
+        function triggerScreenShake(type='light') {
+            const wrapper = document.getElementById('app-wrapper');
+            wrapper.classList.remove('shake-light', 'shake-heavy'); 
+            void wrapper.offsetWidth; 
+            wrapper.classList.add(`shake-${type}`); 
+            setTimeout(() => wrapper.classList.remove(`shake-${type}`), type === 'heavy' ? 600 : 300);
+        }
+
+        // --- Core App Logic ---
+        const ui = {
+            intro: document.getElementById('intro-screen'),
+            scanner: document.getElementById('scanner-screen'),
+            monitor: document.getElementById('monitor'),
+            tag: document.getElementById('tag-label'),
+            display: document.getElementById('display-text'),
+            btnDetect: document.getElementById('btn-detect'),
+            btnNext: document.getElementById('btn-next'),
+            status: document.getElementById('brain-status'),
+            score: document.getElementById('score-counter'),
+            addModal: document.getElementById('add-modal')
+        };
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('lieDetectorCustomData');
+                const custom = saved ? JSON.parse(saved) : [];
+                database = [...defaultData, ...custom];
+                
+                // Shuffle database
+                for (let i = database.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [database[i], database[j]] = [database[j], database[i]];
+                }
+            } catch(e) {
+                database = [...defaultData];
+            }
+        }
+
+        function loadNextMyth() {
+            currentIndex++;
+            if (currentIndex >= database.length) {
+                // Reshuffle and start over
+                currentIndex = 0;
+                database.sort(() => Math.random() - 0.5);
+            }
+            
+            isScanned = false;
+            volatility = 0.1; // Calm graph
+            playSound('scan');
+            
+            ui.monitor.className = 'monitor-card state-myth';
+            ui.monitor.style.setProperty('--border-color', 'var(--accent-cyan)');
+            ui.tag.innerText = "INCOMING SIGNAL";
+            ui.display.innerText = database[currentIndex].myth;
+            ui.status.innerText = "ANALYZING...";
+            
+            ui.btnDetect.style.display = 'flex';
+            ui.btnNext.classList.remove('visible');
+        }
+
+        function detectBullshit(e) {
+            if(isScanned) return;
+            isScanned = true;
+            
+            playSound('buzzer');
+            triggerScreenShake('heavy');
+            volatility = 1.0; // Chaotic graph
+            
+            // Sparks from button
+            const rect = ui.btnDetect.getBoundingClientRect();
+            createSparks(rect.left + rect.width/2, rect.top + rect.height/2, '#ff1744');
+            
+            // UI State Change
+            ui.monitor.className = 'monitor-card state-truth';
+            ui.monitor.style.setProperty('--border-color', 'var(--success)');
+            ui.tag.innerText = "TRUTH DECRYPTED";
+            
+            // Add glitch effect temporarily
+            ui.display.classList.add('glitch-active');
+            setTimeout(() => ui.display.classList.remove('glitch-active'), 500);
+            
+            ui.display.innerText = database[currentIndex].truth;
+            ui.status.innerText = "BULLSHIT DETECTED";
+            
+            // Update Score
+            score++;
+            ui.score.innerText = score;
+            
+            // Button Swap
+            ui.btnDetect.style.display = 'none';
+            ui.btnNext.classList.add('visible');
+            
+            // Calm the graph down after a second
+            setTimeout(() => { volatility = 0.2; }, 1000);
+        }
+
+        // --- Modals & Custom Data ---
+        window.openAddModal = function() {
+            ui.addModal.classList.add('active');
+        }
+        
+        window.closeAddModal = function() {
+            ui.addModal.classList.remove('active');
+            document.getElementById('input-myth').value = '';
+            document.getElementById('input-truth').value = '';
+        }
+
+        window.saveCustomData = function() {
+            const myth = document.getElementById('input-myth').value.trim();
+            const truth = document.getElementById('input-truth').value.trim();
+            
+            if(!myth || !truth) {
+                alert("Please fill out both fields. The machine requires data.");
                 return;
             }
-
-            const customMyth = { myth, response, id: Date.now() };
-            customMyths.push(customMyth);
-            displayCustomMyths();
             
-            mythInput.value = '';
-            responseInput.value = '';
-            mythInput.focus();
+            const newData = { myth, truth };
+            database.splice(currentIndex + 1, 0, newData); // Insert right after current
+            
+            // Save to local storage
+            try {
+                const saved = localStorage.getItem('lieDetectorCustomData');
+                const custom = saved ? JSON.parse(saved) : [];
+                custom.push(newData);
+                localStorage.setItem('lieDetectorCustomData', JSON.stringify(custom));
+            } catch(e) { console.error("Could not save to local storage."); }
+            
+            closeAddModal();
+            playSound('scan');
+            ui.status.innerText = "DATABASE UPDATED";
+            createSparks(window.innerWidth/2, window.innerHeight/2, '#00cec9');
         }
 
-        function displayCustomMyths() {
-            const container = document.getElementById('customMyths');
-            container.innerHTML = customMyths.map(item => `
-                <div class="custom-myth">
-                    <div style="margin-bottom: 0.5rem;">
-                        <strong style="color: var(--danger);">🎭 Myth:</strong> "${item.myth}"
-                    </div>
-                    <div style="margin-bottom: 0.5rem;">
-                        <strong style="color: var(--success);">🎯 Reality Check:</strong> "${item.response}"
-                    </div>
-                    <button class="delete-btn" onclick="deleteCustomMyth(${item.id})">Delete</button>
-                </div>
-            `).join('');
-        }
+        // --- Init & Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            
+            document.getElementById('btn-start').addEventListener('click', () => {
+                getAudioContext();
+                playSound('start');
+                ui.intro.classList.remove('visible');
+                setTimeout(() => {
+                    ui.intro.style.display = 'none';
+                    ui.scanner.classList.add('visible');
+                    loadNextMyth();
+                }, 500);
+            });
 
-        function deleteCustomMyth(id) {
-            customMyths = customMyths.filter(myth => myth.id !== id);
-            displayCustomMyths();
-        }
-
-        function generateRandomResponse() {
-            const validationElement = document.getElementById('randomValidation');
-            const randomValidation = validations[Math.floor(Math.random() * validations.length)];
-            validationElement.textContent = randomValidation;
-            validationElement.style.animation = 'none';
-            setTimeout(() => {
-                validationElement.style.animation = 'slideIn 0.5s ease';
-            }, 10);
-        }
-
-        // Update brain status every 10 seconds
-        setInterval(updateBrainStatus, 10000);
-
-        // Add enter key support for inputs
-        document.getElementById('mythInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('responseInput').focus();
+            ui.btnDetect.addEventListener('click', detectBullshit);
+            ui.btnNext.addEventListener('click', loadNextMyth);
+            
+            // Haptic feedback bindings
+            if(navigator.vibrate) {
+                ui.btnDetect.addEventListener('pointerdown', () => navigator.vibrate([100, 50, 100]));
+                ui.btnNext.addEventListener('pointerdown', () => navigator.vibrate(50));
             }
         });
 
-        document.getElementById('responseInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addCustomMyth();
-            }
+        // --- PWA Installation Logic ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-banner').style.display = 'block';
         });
 
-        // Initialize with a random validation
-        generateRandomResponse();
+        window.installPWA = async function() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                document.getElementById('install-banner').style.display = 'none';
+            }
+        }
+        
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('install-banner').style.display = 'none';
+        });
     </script>
 </body>
 </html>
